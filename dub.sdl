@@ -1,0 +1,7 @@
+name "collate"
+description "System replication and rejuvenation toolkit."
+authors "Utkarsh Bhardwaj (Passeriform) <passeriform.ub@gmail.com>"
+copyright "Copyright © 2021, Utkarsh Bhardwaj (Passeriform) <passeriform.ub@gmail.com>"
+license "MIT"
+dependency "sdlang-d" version="~>0.10.6"
+dependency "commandr" version="~>0.1"

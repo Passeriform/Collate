@@ -1,0 +1,10 @@
+{
+	"fileVersion": 1,
+	"versions": {
+		"commandr": "0.2.0",
+		"sdlang-d": "0.10.6",
+		"sdlite": "1.1.2",
+		"taggedalgebraic": "0.11.22",
+		"unit-threaded": "0.7.55"
+	}
+}

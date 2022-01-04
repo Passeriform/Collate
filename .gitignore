@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/collate
+collate.so
+collate.dylib
+collate.dll
+collate.a
+collate.lib
+collate-test-*
+*.exe
+*.o
+*.obj
+*.lst

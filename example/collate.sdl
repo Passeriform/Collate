@@ -1,0 +1,26 @@
+stage "backup" {
+  preset "choco" {
+    ignore "KB"
+  }
+  preset "vscode" {
+    extension {
+      ignore "Test" "Test2"
+    }
+  }
+}
+
+stage "prepare" {
+
+}
+
+stage "cleanup" {
+
+}
+
+stage "validate" {
+
+}
+
+stage "finalize" {
+
+}
