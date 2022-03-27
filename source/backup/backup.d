@@ -2,7 +2,7 @@ module backup;
 
 import std.stdio : writeln;
 import std.algorithm.iteration : each;
-import std.variant	:	Variant;
+import std.variant  : Variant;
 import sdlang                   : Tag;
 
 import preset       : validatePreset, backupPreset;

@@ -2,6 +2,7 @@
 docs.json
 __dummy.html
 docs/
+target/
 /collate
 collate.so
 collate.dylib

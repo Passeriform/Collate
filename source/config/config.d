@@ -1,7 +1,7 @@
 module config;
 
 import std.stdio                : writeln, stderr;
-import std.algorithm            : each, filter, map, find, joiner, canFind;
+import std.algorithm            : each, filter,    map, find, joiner, canFind;
 import std.array;
 import std.variant              : Variant;
 import std.range                : chain;
@@ -9,7 +9,7 @@ import std.uni                  : toLower;
 import std.typecons             : tuple;
 import std.file                 : readText;
 import std.path                 : baseName, asAbsolutePath;
-import sdlang                   : Tag, parseSource, ParseException;
+import sdlang                   : Tag, Value, parseSource, ParseException;
 
 Tag fetchConfigRoot(string configPath) {
   Tag root;
@@ -18,47 +18,52 @@ Tag fetchConfigRoot(string configPath) {
     // SDLang-D doesn't work properly with windows paths. Hence the extra readText
     root = parseSource(configPath.readText, baseName(configPath));
   } catch(ParseException e) {
-		stderr.writeln(e.msg);
-		throw e;
-	}
+    stderr.writeln(e.msg);
+    throw e;
+  }
 
   return root;
 }
 
-auto getGlobalOptions(Tag root) {
-  auto reservedEntries = [
+Variant[string] getGlobalOptions(Tag root) {
+  string[] reservedEntries = [
     "stage",
     "env",
   ];
 
   return root.tags
     .filter!((tagElem) => !reservedEntries.canFind(tagElem.name)).array
-    // Change getValue template to proper type
-    .map!((tagElem) => tuple(tagElem.name, cast(Variant) tagElem.getValue!string()))
+    // HACK: Mandatory type erasure.
+    .map!((tagElem) => tuple(tagElem.name, Variant(tagElem.getValue!string())))
     .assocArray;
 }
 
-auto getStages(Tag root) {
+Tag[] getStages(Tag root) {
   return root.tags.filter!((tagElem) => tagElem.name.toLower == "stage").array;
 }
 
-auto getStages(Tag root, string stageName) {
+Tag[] getStages(Tag root, string stageName) {
   return root.getStages
     .filter!((tagElem) => tagElem.getValue!string() == stageName).array;
 }
 
-auto getPresets(Tag root) {
+Tag[] getPresets(Tag root) {
   return root.tags.filter!((tagElem) => tagElem.name.toLower == "preset").array;
 }
 
-auto getPresets(Tag root, string presetName) {
+Tag[] getPresets(Tag root, string presetName) {
   return root.getStages
     .filter!((tagElem) => tagElem.getValue!string() == presetName).array;
 }
 
 Tag mergeWith(Tag existingConfig, Variant[string] overloadMap) {
-  // Tag newConfig = existingConfig.map!(
-  //   (configKey)
-  // );
+  for (int i = 0; i < existingConfig.tags.length; i++) {
+    string tagName = existingConfig.tags[i].getFullName.toString;
+    if (tagName in overloadMap) {
+      // HACK: Mandatory type erasure.
+      Value[] newValues= array([Value(overloadMap[tagName].coerce!string)]);
+      existingConfig.tags[i].values = newValues;
+    }
+  }
   return existingConfig;
 }

@@ -1,90 +1,69 @@
 module preset;
 
 import std.format;
-import std.stdio      :	writeln;
-import std.uni        :	toLower;
-import std.array	:	array, split, join;
+import std.stdio      : writeln;
+import std.uni        : toLower;
+import std.array      : array, split, join;
 import std.range      : tail, only;
-import std.algorithm	:	map, filter, equal;
-import std.variant	:	Variant;
+import std.algorithm  : map, filter, equal, find;
+import std.typecons   : Tuple;
+import std.variant    : Variant;
 import std.meta       : aliasSeqOf;
 import sdlang         : Tag;
 
-public import choco   : Choco;
-public import vscode  : VSCode;
-
-
-alias PresetValidateResult = void;
+alias PresetValidateResult = bool;
 alias PresetBackupResult = void;
 
 abstract class Preset {
-  abstract PresetValidateResult validate(Tag presetOptions, Variant[string] globalOptions) { }
-  abstract PresetBackupResult backup(Tag presetOptions, Variant[string] globalOptions) { }
-}
+  private static ref Preset[string] getRegistry() {
+    static Preset[string] registry;
+    return registry;
+  }
 
-auto getPresets() {
-  ClassInfo[] children;
+  public static bool _register(string strName, Preset clazz) {
+    getRegistry()[strName] = clazz;
+    return true;
+  }
 
-  foreach(mod; ModuleInfo) {
-    foreach(clazz; mod.localClasses) {
-      if (clazz.base == typeid(Preset)) {
-        children ~= clazz;
-      }
+  public static Preset getPreset(string presetName) {
+    if (presetName in getRegistry()) {
+      return getRegistry()[presetName];
+    }
+
+    throw new PresetNotFoundException("Preset wasn't found", "Maybe preset isn't registered. Register using static method `register` for Preset");
+  }
+
+  mixin template register(T, string name) {
+    static this() {
+      Preset._register(name, cast(Preset) new T);
     }
   }
 
-  return children;
+  public abstract PresetValidateResult validate(Tag presetOptions, Variant[string] globalOptions) { return false; }
+  public abstract PresetBackupResult backup(Tag presetOptions, Variant[string] globalOptions) { }
 }
-
-auto getPreset(string presetName) {
-  return getPresets.filter!((presetInfo) => presetInfo.name.split(".").tail(1).map!toLower.array.equal(only(presetName.toLower))).array[0].name;
-}
-
-// mixin template injectDispatch(alias presetTag) {
-//   string presetType = presetTag.getValue!string();
-//   string presetOptions = presetTag.tags;
-//
-//   Presets = aliasSeqOf!([__traits(allMembers, S)].sort().map!capitalize());
-//
-//   void operate(auto presetOptions, auto backupOptions, auto globalOptions, auto defaultOperation = () {}) {
-//     SW: switch (presetType.toLower) {
-//       static foreach (T; SupportedTypes) {
-//     		case T.stringof:
-//     			result = new T;
-//     			break SW;
-//     	}
-//     	default:
-//     		throw new Exception("Unknown object type");
-//       case "choco":
-//         // TODO: Use mergeWith here
-//         Choco.proxy(presetOptions, backupOptions, globalOptions);
-//         break;
-//       case "vscode":
-//         VSCode.proxy(presetOptions, backupOptions, globalOptions);
-//         break;
-//       default:
-//         defaultOperation();
-//     }
-//   }
-// }
 
 void validatePreset(Tag presetTag, Variant[string] globalOptions) {
-  // mixin(getPreset(presetTag.getValue!string) ~ ".validate(presetTag.tags, globalOptions)");
-  getPreset(presetTag.getValue!string).validate(presetTag.tags, globalOptions);
-  // mixin injectDispatch!(presetTag, "validate");
-  // operate(presetOptions, backupOptions, globalOptions, delegate {
-  //   auto message = format("Invalid preset %s. Choose from list %(%s\n %)", presetType, PRESET_NAMES);
-  //   stderr.writeln(message);
-  //   throw new ValidationError(message);
-  // });
+  Preset.getPreset(presetTag.getValue!string).validate(presetTag, globalOptions);
 }
 
-void backupPreset(Tag presetTag, Variant[string] options) {
-  // mixin injectOperation!(presetTag, () { backup(); });
-  // operate(presetOptions, backupOptions, globalOptions);
+void backupPreset(Tag presetTag, Variant[string] globalOptions) {
+  Preset.getPreset(presetTag.getValue!string).backup(presetTag, globalOptions);
+}
+
+class PresetNotFoundException : Exception {
+    this(string msg, string suggestion, string file = __FILE__, size_t line = __LINE__) {
+        super(msg ~ "\n" ~ suggestion, file, line);
+    }
 }
 
 class ValidationError : Exception {
+    this(string msg, string file = __FILE__, size_t line = __LINE__) {
+        super(msg, file, line);
+    }
+}
+
+class BackupError : Exception {
     this(string msg, string file = __FILE__, size_t line = __LINE__) {
         super(msg, file, line);
     }
