@@ -1,16 +1,13 @@
 module utility;
 
-import std.stdio    : writeln;
-import std.algorithm: map;
-import std.ascii    : letters;
-import std.array    : array, join;
-import std.conv     : to;
-import std.range    : iota;
-import std.traits   : isArray, isSomeString, isAssociativeArray, isPointer, isBoolean;
-import std.random   : uniform;
-import std.variant  : Variant;
-
-import sdlang       : Tag, Value;
+import sdlang         : Tag, Value;
+import std.algorithm  : map;
+import std.array      : array, join;
+import std.ascii      : letters;
+import std.conv       : to;
+import std.random     : uniform;
+import std.range      : iota;
+import std.traits     : isArray, isAssociativeArray, isSomeString;
 
 T getOrElse(T)(T maybeValue, T defaultValue) {
   bool shouldDefault = maybeValue == null;

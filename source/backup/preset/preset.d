@@ -1,15 +1,7 @@
 module preset;
 
-import std.format;
-import std.stdio      : writeln;
-import std.uni        : toLower;
-import std.array      : array, split, join;
-import std.range      : tail, only;
-import std.algorithm  : map, filter, equal, find;
-import std.typecons   : Tuple;
-import std.variant    : Variant;
-import std.meta       : aliasSeqOf;
 import sdlang         : Tag;
+import std.variant    : Variant;
 
 alias PresetValidateResult = bool;
 alias PresetBackupResult = void;

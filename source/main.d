@@ -1,10 +1,11 @@
 module main;
 
-import std.variant		:	Variant;
-import std.conv			:	to;
-import commandr			:	ProgramArgs, Program, Flag, Command, Argument, Option, parse;
-import backup			:	backup;
-import config;
+import commandr     : Argument, Command, Flag, Option, parse, Program, ProgramArgs;
+import std.variant  : Variant;
+import std.conv     : to;
+
+import backup       : backup;
+import config       : config;
 
 void main(string[] args) {
 	auto parsedArgs = new Program("collate", "1.0")

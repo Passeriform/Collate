@@ -1,17 +1,13 @@
 module choco;
 
-import std.stdio    : stdin, stdout, stderr;
-import std.algorithm: map;
-import std.array    : array;
-import std.conv     : to;
+import sdlang       : Tag;
 import std.file     : mkdirRecurse;
 import std.path     : absolutePath, buildNormalizedPath;
 import std.process  : spawnProcess, wait;
-import std.typecons : Tuple;
+import std.stdio    : stderr, stdin, stdout;
 import std.variant  : Variant;
-import sdlang       : Tag;
 
-import preset       : Preset, PresetValidateResult, PresetBackupResult;
+import preset       : Preset, PresetBackupResult, PresetValidateResult;
 import utility      : getCoerced, getCoercedTagValues, prepareScriptArg;
 
 class Choco : Preset {

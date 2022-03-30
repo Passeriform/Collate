@@ -1,15 +1,14 @@
 module config;
 
-import std.stdio                : writeln, stderr;
-import std.algorithm            : each, filter,    map, find, joiner, canFind;
-import std.array;
-import std.variant              : Variant;
-import std.range                : chain;
-import std.uni                  : toLower;
-import std.typecons             : tuple;
-import std.file                 : readText;
-import std.path                 : baseName, asAbsolutePath;
-import sdlang                   : Tag, Value, parseSource, ParseException;
+import sdlang         : ParseException, parseSource, Tag, Value;
+import std.algorithm  : filter, map, canFind;
+import std.array      : array;
+import std.file       : readText;
+import std.path       : baseName;
+import std.stdio      : stderr, writeln;
+import std.typecons   : tuple;
+import std.uni        : toLower;
+import std.variant    : Variant;
 
 Tag fetchConfigRoot(string configPath) {
   Tag root;

@@ -1,17 +1,14 @@
 module portable;
 
-import std.stdio    : stdout, stdin, stderr;
-import std.algorithm: map;
-import std.array    : array;
+import sdlang       : Tag;
 import std.file     : mkdirRecurse;
 import std.path     : absolutePath, buildNormalizedPath;
 import std.process  : spawnProcess, wait;
-import std.typecons :	Tuple;
-import std.variant	:	Variant;
-import sdlang       : Tag;
+import std.stdio    : stderr, stdin, stdout;
+import std.variant  : Variant;
 
-import preset       : Preset, PresetValidateResult, PresetBackupResult;
-import utility    	:	getCoerced, getCoercedTagValues, prepareScriptArg, generateRandomString;
+import preset         : Preset, PresetBackupResult, PresetValidateResult;
+import utility        : getCoerced, getCoercedTagValues, prepareScriptArg, generateRandomString;
 
 class Portable : Preset {
   override PresetValidateResult validate(Tag presetOptions, Variant[string] globalOptions) {
