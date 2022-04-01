@@ -7,4 +7,4 @@ license "MIT"
 dependency "sdlang-d" version="~>0.10.6"
 dependency "commandr" version="~>0.1"
 
-postBuildCommands-windows-x86 [ "$PACKAGE_DIR\\scripts\\Post-Build.ps1" ]
+postBuildCommands-windows-x86_64 "powershell.exe $PACKAGE_DIR/scripts/Post-Build.ps1"
