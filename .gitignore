@@ -3,6 +3,8 @@ docs.json
 __dummy.html
 docs/
 target/
+*.cer
+*.crt
 /collate
 collate.so
 collate.dylib
