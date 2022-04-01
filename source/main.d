@@ -5,7 +5,7 @@ import std.variant  : Variant;
 import std.conv     : to;
 
 import backup       : backup;
-import config       : config;
+import config       : fetchConfigRoot, getGlobalOptions, getStages, mergeWith;
 
 void main(string[] args) {
 	auto parsedArgs = new Program("collate", "1.0")

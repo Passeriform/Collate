@@ -2,13 +2,14 @@ module config;
 
 import sdlang         : ParseException, parseSource, Tag, Value;
 import std.algorithm  : filter, map, canFind;
-import std.array      : array;
+import std.array      : array, assocArray;
 import std.file       : readText;
 import std.path       : baseName;
-import std.stdio      : stderr, writeln;
 import std.typecons   : tuple;
 import std.uni        : toLower;
 import std.variant    : Variant;
+
+import exception      : InvalidConfigException;
 
 Tag fetchConfigRoot(string configPath) {
   Tag root;
@@ -17,8 +18,11 @@ Tag fetchConfigRoot(string configPath) {
     // SDLang-D doesn't work properly with windows paths. Hence the extra readText
     root = parseSource(configPath.readText, baseName(configPath));
   } catch(ParseException e) {
-    stderr.writeln(e.msg);
-    throw e;
+    throw new InvalidConfigException(
+      "Config was found to be invalid\n\t" ~ e.msg,
+      "Error occurred while parsing the config file",
+      "Try fixing the issues in config file and try again"
+    );
   }
 
   return root;
