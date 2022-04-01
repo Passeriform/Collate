@@ -3,14 +3,10 @@
 $CertificateSubject = "CN=Collate Scripts Signing Certificate, O=Passeriform"
 
 function Get-RegisteredCertificate([string]$Subject) {
-  Write-Host "PATH 5"
-  Write-Host (Get-ChildItem -Path Cert:\CurrentUser\My -CodeSigningCert | ? { $_.Subject -match "$CertificateSubject" })
   return (Get-ChildItem -Path Cert:\CurrentUser\My -CodeSigningCert | ? { $_.Subject -match "$CertificateSubject" })
 }
 
 function Register-Certificate([string]$CertificatePath) {
-  Write-Host "PATH 6"
-  Write-Host $CertificatePath
   Import-Certificate -FilePath $CertificatePath -CertStoreLocation Cert:\CurrentUser\Root
 }
 
@@ -25,25 +21,16 @@ function Create-CollateCertificate() {
     CertStoreLocation = 'Cert:\CurrentUser\My'
   }
   
-  Write-Host "PATH 7"
-  Write-Host $Params
   $CollateSigningCert = New-SelfSignedCertificate @Params
-
-  Write-Host "PATH 8"
-  Write-Host $CollateSigningCert
 
   return $CollateSigningCert
 }
 
 function Import-CollateCertificate($CertificateImportPath) {
-  Write-Host "PATH 9"
-  Write-Host $CertificateImportPath
   Import-Certificate -FilePath "$CertificateImportPath" -CertStoreLocation Cert:\CurrentUser\Root
 }
 
 function Export-CollateCertificate($CertificateExportPath, $CollateSigningCert) {
-  Write-Host "PATH 10"
-  Write-Host $CertificateExportPath
   Export-Certificate -FilePath "$CertificateExportPath" -Cert $CollateSigningCert
 }
 
@@ -62,29 +49,15 @@ function Get-CollateCertificate {
   #>
   $CollateCertificatePath = "$((Get-Item $PSCommandPath).Directory.FullName)\collate.cer"
   $CollateCertificate = Get-RegisteredCertificate $CertificateSubject
-  
-  Write-Host "PATH 11"
-
-  Write-Host $CollateCertificatePath
-  Write-Host $CollateCertificate
-
-  Write-Host "PATH 12"
-
-  Write-Host (!(Test-Path -Path $CollateCertificatePath -PathType Leaf))
-  Write-Host (!$CollateCertificate)
 
   if (!(Test-Path -Path $CollateCertificatePath -PathType Leaf)) {
-    Write-Host "PATH 1"
     if (!$CollateCertificate) {
-      Write-Host "PATH 2"
       Create-CollateCertificate
     }
     
     Export-CollateCertificate $CollateCertificatePath $CollateSigningCert
   } else {
-    Write-Host "PATH 3"
     if (!$CollateCertificate) {
-      Write-Host "PATH 4"
       Import-CollateCertificate $CollateCertificatePath
     }
   }
@@ -94,16 +67,12 @@ function Get-CollateCertificate {
   # Fetch the latest certificate instance
   $CollateCertificate = Get-RegisteredCertificate "Collate Scripts Signing Certificate"
 
-  Write-Host $CollateCertificate
-
   return $CollateCertificate
 }
 
 ##### Signing scripts #####
 
 function Sign-Script($ScriptPath, $Certificate) {
-  Write-Host $ScriptPath
-  Write-Host $Certificate
   Set-AuthenticodeSignature -Certificate $Certificate -FilePath $ScriptPath
 }
 
@@ -120,34 +89,34 @@ ForEach ($Script in $Scripts) {
 # SIG # Begin signature block
 # MIIF6wYJKoZIhvcNAQcCoIIF3DCCBdgCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU4bYSu45vffJGdSxFp6/iHG9Z
-# /nKgggNcMIIDWDCCAkCgAwIBAgIQbfydpuwJobRF5KiiFAzqSTANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUfTspyS2yYqG3NkwZEPjxdcTE
+# PmSgggNcMIIDWDCCAkCgAwIBAgIQNJXPexLXZr1OqwRQr/pPkzANBgkqhkiG9w0B
 # AQUFADBEMRQwEgYDVQQKDAtQYXNzZXJpZm9ybTEsMCoGA1UEAwwjQ29sbGF0ZSBT
-# Y3JpcHRzIFNpZ25pbmcgQ2VydGlmaWNhdGUwHhcNMjIwMzMwMDkzMjQyWhcNMjcw
-# MzMwMDk0MjMwWjBEMRQwEgYDVQQKDAtQYXNzZXJpZm9ybTEsMCoGA1UEAwwjQ29s
+# Y3JpcHRzIFNpZ25pbmcgQ2VydGlmaWNhdGUwHhcNMjIwMzMxMjMyOTAyWhcNMjcw
+# MzMxMjMzOTAxWjBEMRQwEgYDVQQKDAtQYXNzZXJpZm9ybTEsMCoGA1UEAwwjQ29s
 # bGF0ZSBTY3JpcHRzIFNpZ25pbmcgQ2VydGlmaWNhdGUwggEiMA0GCSqGSIb3DQEB
-# AQUAA4IBDwAwggEKAoIBAQC+/S1lbJAfK0c4jnk4rF3pD+/L6WVHEStVghlXCeJQ
-# pDLtmyPFpSs+VDkDA3wVQmAdlFp8nl40QluYvPQ+2FPQRWMrDHmdVQR5wGFlDaWx
-# amxKSM/+M866u5cOzqm1ZUNt9pm7bFXfcPLZnBjK1fFoxK+vc3R4lgDtAWsaHSvT
-# Bt8v5tzXMYliXRABlE9tKZikIqwxzo80kMDv2MUsuFIAidLHTamrlTN/CZQHmFRX
-# TTTnBfk4FGxDOuWovZlTC6fMhIr5GHdNSNNaw7IQLhcBZe4m5g9Sbd+fFBCaThnF
-# XicNhiqlRrAPwdg/fc/c+PjyaOXJ1fWBQ76TX/uTUZCtAgMBAAGjRjBEMA4GA1Ud
-# DwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDAzAdBgNVHQ4EFgQU4HP5w00B
-# BxVQ4yZE0yVtFWUA+cwwDQYJKoZIhvcNAQEFBQADggEBAHia9ZgfSEpJmGhBhzP3
-# IPcj1aqArtcbUI80Uu/vHnVwyC1DfTFCZHbmv3VVXBrfeAR5DROqMxUqSxN9mzOV
-# 0eID/B1sdju8f/HF5Vu3Bs06ErF4XhceW1Tq4H6AHbD3pvtpg/+tCunoo33u1TeI
-# m0mjgKWJsB0y5ObIPjg0XvFHj/2AUG90zS1ZZzOFYKVxiyZt4UyZMynMGgoF0G+u
-# QOKmnYccN6iDE236ZKvM3XL4w9jqyxaZDYhDZnVtrxVbKlUK0CEAxcUZjYHLN5+L
-# 29Wzw/6KGzSlzyy8Veze4rC8IfmvpZ+/4lJBEUR7zLNKfs2rZeJ2lnH7IdDD+PjQ
-# yQcxggH5MIIB9QIBATBYMEQxFDASBgNVBAoMC1Bhc3Nlcmlmb3JtMSwwKgYDVQQD
-# DCNDb2xsYXRlIFNjcmlwdHMgU2lnbmluZyBDZXJ0aWZpY2F0ZQIQbfydpuwJobRF
-# 5KiiFAzqSTAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZ
+# AQUAA4IBDwAwggEKAoIBAQDRLqdumz0gt9xhDnNuBrVCZqTXDXc4h4g7NKE4x2Z4
+# Kbsxx1EdIZocLasL0rwa/4jqRmgyW7ackPuh0Dh8zZpSxY6lYbwbwvQ+qh9Y+9W1
+# hCcsEqkPGZNnPSimjKJ/AKzKzABU920K6H+fkEAFfJir3keUbIAcDSVpcOQsd89S
+# KpFQbbOaK9pmzs/4m0dD4XA45L6dU1c7hHjhaGOAT8gjI11klIxFQRYefNVUf4LM
+# h4gY8OibDtmJXSyJrOY/C5f1WBGyoyK+2j5bdvPGe3bQtjADwvoOTUo/y/jNc8A2
+# FtrmUeYW/iuM6BJYeSGxAGhUMXOasiffyHexFJUyYn8xAgMBAAGjRjBEMA4GA1Ud
+# DwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDAzAdBgNVHQ4EFgQUiKc7Kyei
+# oMjvg0139GDYAdqOWhgwDQYJKoZIhvcNAQEFBQADggEBAM6uXk6KbzqVwKg31VI2
+# qRU/AQfwpR6CrJ8ifGIaJIf7Sb8rjSsMwW1aRYrymYrIFjT17dObqNvMf9hoeONu
+# pNnpaxIZlTnpo/aJBfl8f3cd2CvsA/CB+4aeCr5ntP3S1n9hUF+cRQS7OZbBGMFi
+# GBXL7Y6lPMojP/uqwXhT30491hRp9D834GXrClvgvJlMBRwSM49q9zDsct+fck1+
+# Y8kHg3c12hc1XTUKd95MyLo682JSSiFOgAvqysxawVS+Sx7nTq3qdYeI0L7Ti36T
+# 6Zw8+ERQRn/6v14RE+0OycklX6Zp+beilddYYaEqupdzBngYN+Irs8BRFbLxGD0S
+# Qb0xggH5MIIB9QIBATBYMEQxFDASBgNVBAoMC1Bhc3Nlcmlmb3JtMSwwKgYDVQQD
+# DCNDb2xsYXRlIFNjcmlwdHMgU2lnbmluZyBDZXJ0aWZpY2F0ZQIQNJXPexLXZr1O
+# qwRQr/pPkzAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZ
 # BgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYB
-# BAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQU2ElFAE72noo8egH8PshUe/+NqsQwDQYJ
-# KoZIhvcNAQEBBQAEggEANX7YfXa9LRyRtWxBkA1MEUkasN5D7tFygP3K/Zkj1bmg
-# TclW41K05ABNrVODnG3r/q78kQlRAhAZlbs+xtoe3IswvFz4TyjQUw2ZpRz9gSPr
-# HGMpgRDT87d+VC4soBh1yR+dqww1PPWpPm+oxJT3hlLmBu3Hn7OBPj8zhh0Bzsm4
-# tCpBR2YuqXAqKYUnd+oXfe/bL1m7dkLKBOlcFrhHWTky2Kfg11CCQJpJb++/UxMq
-# LP4RaCpEttDAzmpJqIFJCH3YxUjTKdgEL5VDnmUlLCW3HKxmhrV5Auz1EotLPzin
-# 0PwCsToJ8FDBQmNc74HFdmM+v7BcmxCQJNlRRLDXgw==
+# BAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUI2650vn5wAZ8sSfOgETIsClexDQwDQYJ
+# KoZIhvcNAQEBBQAEggEAgMBaVDF+FcKdHCHa8N6q8K2NCj8YPzrlJjhswm822eVA
+# krBlN0oxalFE+r3Rju8tNMnExkUAd2VIlUdier/5QzPb6mzpNnhv56nGxo6/5Hmc
+# aMlSvQnVc99n95hVPi3lOQv3kaNGkqTNw4o23CIcyNzcrspvsWKE3GP192dv71ZW
+# luk9BQDQs6bRsWv6BjGJZ4nlzCp0kI1RYjMEMSDnQAnIhznaUrgvuLSN2na6D1Kx
+# 5xIoke7p/HvaX4OAz4QUcnMJ5H2p9KfnSl2TvkuQvUc5uKMobMfaFzUgwRK1IW8m
+# bo2rBr/jSY1BbGpcjk5KwRKllWhXVQKKMhREKlsPaQ==
 # SIG # End signature block
