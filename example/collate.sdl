@@ -1,26 +1,74 @@
 stage "backup" {
+  preset "cargo"
   preset "choco" {
-    ignore "KB"
+    ignore "KB" "vcredist"
   }
+  preset "gem"
+  preset "gitrepo" recursive=true depth=2 {
+    scanroot "G:"
+  }
+  /*
+  preset "installable" {
+      entry "Adobe Suite" "C:\Users\username\adobe\configs"
+  }
+  */
+  preset "npm"
+  preset "pip"
+  preset "portable" label="Storage" {
+    include "K:\AbletonProjects" "K:\Notes" "K:\Recordings" "K:\Screenshots"
+  }
+  preset "steam" {
+    ignore "Spacewar" "Steamworks Shared"
+  }
+  /*
   preset "vscode" {
     extension {
-      ignore "Test" "Test2"
+      ignore "copilot"
     }
+  }
+  */
+}
+
+stage "prepare" installerdevice="{UUID}" bootloader="CLOVER" {
+  installer "Windows" imagepath="H:\Operating Systems\Windows\Windows11\windows11.iso"
+  installer "Linux" imagepath="H:\Operating Systems\Linux\Arch\arch_2022.iso"
+  installer "MacOS" imagepath="H:\Operating Systems\MacOS\Monterey\moneterey.dmg"
+}
+
+stage "partitioning" partition_table="GPT" {
+  partition "ESP" type="FAT32" size="500M"
+  partition "MSR" type="MSR" size="16M"
+  partition "Windows" type="NTFS" size="200G"
+  partition "Arch" type="EXT4" size="200G"
+  partition "Swap" type="SWAP" size="8G"
+  partition "Macintosh" type="HFS+" size="200G"
+  partition "WindowsApps" type="NTFS" size="200G"
+  partition "Secure" type="NTFS" size="50G"
+  partition "Virtualization" type="NTFS" size="40G"
+  partition "Storage" type="extFS" size="100G+"
+}
+
+stage "system-setup" {
+  install "Windows" customPartitionScheme=true {
+    load-config "${target}/windows.config"
+    execute
+  }
+  install "Linux" {
+    load-config "${target}/arch.config"
+    execute
+  }
+  install "MacOS" {
+    load-config "${target}/macos.config"
+    execute
   }
 }
 
-stage "prepare" {
-
+stage "restore" {
+  preset "installable" {
+    entry "Adobe Suite" path="${target}/installers/Adobe Suite.exe"
+    entry "EaseUS Partition Manager" path="${target}/installers/EaseUS Partition Manager.exe"
+  }
 }
 
-stage "cleanup" {
-
-}
-
-stage "validate" {
-
-}
-
-stage "finalize" {
-
-}
+stage "validate"
+stage "finalize"
