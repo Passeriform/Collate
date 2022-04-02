@@ -1,3 +1,5 @@
+target "L:\CollateBackup"
+
 stage "backup" {
   preset "cargo"
   preset "choco" {
@@ -15,7 +17,7 @@ stage "backup" {
   preset "npm"
   preset "pip"
   preset "portable" label="Storage" {
-    include "K:\AbletonProjects" "K:\Notes" "K:\Recordings" "K:\Screenshots"
+    include "K:"
   }
   preset "steam" {
     ignore "Spacewar" "Steamworks Shared"
