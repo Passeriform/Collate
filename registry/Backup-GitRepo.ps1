@@ -80,7 +80,7 @@ ForEach ($Repo in $GitRepos) {
   Push-Location $Repo.FullName
 
   # Bundle
-  git bundle create "$RepoBackupTarget\test.bundle" --all
+  git bundle create "$RepoBackupTarget\$($Repo.Name).bundle" --all
 
   # Stashes
   git stash list | % {
@@ -99,14 +99,20 @@ ForEach ($Repo in $GitRepos) {
   # Unstaged
   [IO.File]::WriteAllLines("$RepoBackupTarget\unstaged.patch", (git diff --patch))
 
+  $TemporaryStashMessage = "[Collate] A temporary stash created by collate. Pop if left over while backup process."
+
   # Untracked
-  git stash -m "[Collate] A temporary stash created by collate. Pop if left over while backup process."
+  git stash -m $TemporaryStashMessage
 
   git add .
   [IO.File]::WriteAllLines("$RepoBackupTarget\untracked.patch", (git diff --cached --patch))
   git reset
 
-  git stash pop --index
+  $TemporaryStashName = (git stash list | ? { $_ -imatch $TemporaryStashMessage } | % { ($_ -split ": ")[0] })
+
+  if ($TemporaryStashMessage -ne $null) {
+    git stash pop $TemporaryStashName --index
+  }
 
   Pop-Location
 }
