@@ -21,7 +21,7 @@ class Choco : Preset {
     targetPath.mkdirRecurse;
 
     string keepString = presetOptions.getCoercedTagValues!(string)("keep", []).prepareScriptArg!(string[]);
-    string ignoreString = presetOptions.getCoercedTagValues!(string)("ignore", []).prepareScriptArg!(string[]);
+    string excludeString = presetOptions.getCoercedTagValues!(string)("exclude", []).prepareScriptArg!(string[]);
 
     auto pid = spawnProcess(
       [
@@ -29,7 +29,7 @@ class Choco : Preset {
         absolutePath("registry/Backup-Choco.ps1"),
         "-Target", targetPath,
         "-Keep", keepString,
-        "-Ignore", ignoreString,
+        "-Exclude", excludeString,
       ],
       stdin,
       stdout,

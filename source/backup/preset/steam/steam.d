@@ -20,7 +20,7 @@ class Steam : Preset {
     string targetPath = buildNormalizedPath(globalOptions.getCoerced!(string)("target", "./target"), "steam");
     targetPath.mkdirRecurse;
 
-    string keepString = presetOptions.getCoercedTagValues!(string)("keep", []).prepareScriptArg!(string[]);
+    string includeString = presetOptions.getCoercedTagValues!(string)("include", []).prepareScriptArg!(string[]);
     string ignoreString = presetOptions.getCoercedTagValues!(string)("ignore", []).prepareScriptArg!(string[]);
 
     auto pid = spawnProcess(
@@ -28,7 +28,7 @@ class Steam : Preset {
         "powershell",
         absolutePath("registry/Backup-Steam.ps1"),
         "-Target", targetPath,
-        "-Keep", keepString,
+        "-Include", includeString,
         "-Ignore", ignoreString,
       ],
       stdin,

@@ -3,7 +3,7 @@ target "L:\CollateBackup"
 stage "backup" {
   preset "cargo"
   preset "choco" {
-    ignore "KB" "vcredist"
+    exclude "KB" "vcredist"
   }
   preset "gem"
   preset "gitrepo" recursive=true depth=2 {

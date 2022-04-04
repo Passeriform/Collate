@@ -1,0 +1,32 @@
+target "L:\\Snapshot\\Collate"
+
+stage "backup" {
+  preset "cargo"
+  preset "choco" {
+    ignore "KB" "vcredist"
+  }
+  preset "gem"
+  preset "gitrepo" recursive=true depth=2 {
+    scanroot "G:"
+  }
+  /*
+  preset "installable" {
+      entry "Adobe Suite" "C:\Users\username\adobe\configs"
+  }
+  */
+  preset "npm"
+  preset "pip"
+  preset "portable" label="Storage" {
+    include "K:"
+  }
+  preset "steam" {
+    ignore "Spacewar" "Steamworks Shared"
+  }
+  /*
+  preset "vscode" {
+    extension {
+      ignore "copilot"
+    }
+  }
+  */
+}
