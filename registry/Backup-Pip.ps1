@@ -58,13 +58,13 @@ $ExcludeExists = $Exclude.count -ne 0
 $Packages = pip list --format freeze --no-index
 
 if (!$SustainVersion) {
-  $Packages = $Packages | % { ($_ -split "[=><~]*")[0] }
+  $Packages = $Packages | % { ($_ -split "[=><~]+")[0] }
 }
 
 foreach ($Dir in $IncludeDir) {
   $PackagesForDir = pip list --path $Dir --format freeze --no-index
   if (!$SustainVersion) {
-    $PackagesForDir = $Packages | % { ($_ -split "[=><~]*")[0] }
+    $PackagesForDir = $Packages | % { ($_ -split "[=><~]+")[0] }
   }
   $Packages += $PackagesForDir
 }
@@ -81,8 +81,8 @@ Set-Content $Packages -Path $RequirementsFile
 # SIG # Begin signature block
 # MIIF6wYJKoZIhvcNAQcCoIIF3DCCBdgCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUjECyD7sJ0HGbMrjEHq26CKBX
-# ox6gggNcMIIDWDCCAkCgAwIBAgIQNJXPexLXZr1OqwRQr/pPkzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUBYYYo4XMaANnQHhxLLFskYhG
+# RNigggNcMIIDWDCCAkCgAwIBAgIQNJXPexLXZr1OqwRQr/pPkzANBgkqhkiG9w0B
 # AQUFADBEMRQwEgYDVQQKDAtQYXNzZXJpZm9ybTEsMCoGA1UEAwwjQ29sbGF0ZSBT
 # Y3JpcHRzIFNpZ25pbmcgQ2VydGlmaWNhdGUwHhcNMjIwMzMxMjMyOTAyWhcNMjcw
 # MzMxMjMzOTAxWjBEMRQwEgYDVQQKDAtQYXNzZXJpZm9ybTEsMCoGA1UEAwwjQ29s
@@ -104,11 +104,11 @@ Set-Content $Packages -Path $RequirementsFile
 # DCNDb2xsYXRlIFNjcmlwdHMgU2lnbmluZyBDZXJ0aWZpY2F0ZQIQNJXPexLXZr1O
 # qwRQr/pPkzAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZ
 # BgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYB
-# BAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQU719Kc1Vv/fnwCMGRo79X/KWAiYowDQYJ
-# KoZIhvcNAQEBBQAEggEAPZpj162SmWwqmAFkrxTzk1Y5RVD5Pz6KsVlzaT2rvwfa
-# RD/eEdPeaSkezFV4+PVhAk/Ta0YcOf95WWFop9hZjFqxDIzbJS3nZIOm/82vAd65
-# r4haJz/AJBt6wPcosqZf/TA9rUE3ZEBET8Cmyffz0+EHdCVtCjmpOdDFtPqJ0GSy
-# VxhIU5DHD1FTkmFQwj6XUeHUfkZlUsIPehlmSahQcC0rXldOxHiZzj2mz8PWs3hM
-# tFtKvM2ABnDohVYFZ9mPtt5kCL8dpcbk5eZbYX5alQZ9Rs3xpK/+BFCVLDFVgNbP
-# 68PW13hhyvN/Z/xyAd3gzDBIFuN2iGt91o7TGXbcVw==
+# BAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUlYx5BobgzLFypsfkaqzqF23sO+wwDQYJ
+# KoZIhvcNAQEBBQAEggEAmFpHGLZ31BNfgn85ho0o+a8hk00Q4lyTWxcemuSQzJMP
+# zzs1E+6b+tMfKr+fYS3PPRaJmJnLLULq8co4kPjIxY3g56cml47X/XWrnfw+qVTp
+# ls3N/mqCE0pbhRYVoDbKlggilBqTV0S/kjFmWozbuszYTm3xUYoEdFN6lhqCnpYn
+# s8YSSfXsZ17AHqLXACupbgJ9msy2dmtF9mn5xlOwMwMmyN0KT00Scf3nw6gKjdW/
+# cC22UgRVg8n3XQOmCP+wf8qkyXRyIsrc6PPI21GLeTRoWwwWDtg0pdre2nfQcuh2
+# 6y8rtoNs1RGghynMMh9CqlsKafJLbo2sUryqDpavzQ==
 # SIG # End signature block

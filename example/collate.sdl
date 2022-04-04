@@ -20,7 +20,7 @@ stage "backup" {
     include "K:"
   }
   preset "steam" {
-    ignore "Spacewar" "Steamworks Shared"
+    exclude "Spacewar" "Steamworks Shared"
   }
   /*
   preset "vscode" {
