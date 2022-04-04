@@ -56,13 +56,13 @@ $PackageXml = ""
 
 $Packages | % { $PackageXml += "`n`t<package id=""$_"" />" }
 
-Set-Content "<?xml version=`"1.0`" encoding=`"utf-8`"?>`n<packages>$PackageXml`n</packages>" -Path $target
+Set-Content "<?xml version=`"1.0`" encoding=`"utf-8`"?>`n<packages>$PackageXml`n</packages>" -Path $PackageFile
 
 # SIG # Begin signature block
 # MIIF6wYJKoZIhvcNAQcCoIIF3DCCBdgCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU9wGj95CHvUfikLAHLc2sBmUs
-# vrCgggNcMIIDWDCCAkCgAwIBAgIQNJXPexLXZr1OqwRQr/pPkzANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUbFMBZyPExwuhhdFd3SRzue3A
+# 4FGgggNcMIIDWDCCAkCgAwIBAgIQNJXPexLXZr1OqwRQr/pPkzANBgkqhkiG9w0B
 # AQUFADBEMRQwEgYDVQQKDAtQYXNzZXJpZm9ybTEsMCoGA1UEAwwjQ29sbGF0ZSBT
 # Y3JpcHRzIFNpZ25pbmcgQ2VydGlmaWNhdGUwHhcNMjIwMzMxMjMyOTAyWhcNMjcw
 # MzMxMjMzOTAxWjBEMRQwEgYDVQQKDAtQYXNzZXJpZm9ybTEsMCoGA1UEAwwjQ29s
@@ -84,11 +84,11 @@ Set-Content "<?xml version=`"1.0`" encoding=`"utf-8`"?>`n<packages>$PackageXml`n
 # DCNDb2xsYXRlIFNjcmlwdHMgU2lnbmluZyBDZXJ0aWZpY2F0ZQIQNJXPexLXZr1O
 # qwRQr/pPkzAJBgUrDgMCGgUAoHgwGAYKKwYBBAGCNwIBDDEKMAigAoAAoQKAADAZ
 # BgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgorBgEEAYI3AgELMQ4wDAYKKwYB
-# BAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQURuwCVwGvcuiI8SjBGM5izc78uQYwDQYJ
-# KoZIhvcNAQEBBQAEggEApJMfb75Npw0WDuKQWcENCxLNp5Ubmerfk7rJe3681SBL
-# +VKHNllZj+uqSEuL5DXBgZdhJuR9ZB3j04WEz7s1BOOMr+uDOxxawg3CCLpEZi14
-# Cg/wU+tpwJ8Y2vkKpxzpeX0wbOTIABUBwfyaLYeEcO/P4H7fJ6V933dX4qAEZunD
-# kRhrf8vT+Fuip2wR2FIQlqAphNhPisNeP8+ahYaVk2nxtZ0Mp4tWXlIlcqJ8k1dQ
-# dkLI1OEGZIeZE1aAuiOBrImq2YgXAulkzdeUveNpt6IA5rkH4AP9eXQ4veffT4KS
-# qtVw+9av0PWMzIbwQxGqa9zTujApGXDE1qIZI3panA==
+# BAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUR6LtiVZOd668YBI+nSIXWW6OBUAwDQYJ
+# KoZIhvcNAQEBBQAEggEAOBzljtYwh5xNqSB8LGtFejUvcZ0ILdgCDYlWKXG73P5F
+# icMqmi4jUqhOie6pgiWj2zCPekv7hgw4eGM0jYlElPdWb5RJsnSf40IHKNzgK08T
+# bCMr3V5+aB3kyJZGLwajHlkPKcEgCmNOW7F8F62XegX0TzcVZmkZMVYKnM6+Rqs8
+# a9OVUrHFEOgtJ28aOrMtmYopAMQTbEWETOWd2w7LcX0Mse2V53gbDCCD18B5nrrK
+# PDJM0wDGEGmkzyrwNZ/lXXIS6A23ggwzo+U1RSGuPHJjuZuai7h2oRxmbQSzTiuc
+# 2HBvz1ptU0NdERBQrayE/wj9rTQHkQ4rxwOP/Lar5w==
 # SIG # End signature block
