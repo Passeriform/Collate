@@ -3,7 +3,7 @@ target "L:\\Snapshot\\Collate"
 stage "backup" {
   preset "cargo"
   preset "choco" {
-    ignore "KB" "vcredist"
+    exclude "KB" "vcredist"
   }
   preset "gem"
   preset "gitrepo" recursive=true depth=2 {
@@ -20,12 +20,12 @@ stage "backup" {
     include "K:"
   }
   preset "steam" {
-    ignore "Spacewar" "Steamworks Shared"
+    exclude "Spacewar" "Steamworks Shared"
   }
   /*
   preset "vscode" {
     extension {
-      ignore "copilot"
+      exclude "copilot"
     }
   }
   */

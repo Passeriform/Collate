@@ -25,13 +25,13 @@ stage "backup" {
   /*
   preset "vscode" {
     extension {
-      ignore "copilot"
+      exclude "copilot"
     }
   }
   */
 }
 
-stage "prepare" installerdevice="{UUID}" bootloader="CLOVER" {
+stage "prepare" installerdevice="M:" strategy="rufus" {
   installer "Windows" imagepath="H:\Operating Systems\Windows\Windows11\windows11.iso"
   installer "Linux" imagepath="H:\Operating Systems\Linux\Arch\arch_2022.iso"
   installer "MacOS" imagepath="H:\Operating Systems\MacOS\Monterey\moneterey.dmg"
