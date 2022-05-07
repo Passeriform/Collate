@@ -28,7 +28,7 @@ Scleros
         OSX
             Macintosh => HFS+ 150GB
             Recovery => HFS+ 100GB
-        
+
         Development => NTFS(interop) 50GB
         VM => NTFS(interop) 100GB
         Warehouse => NTFS(interop) <Leftover>
@@ -80,6 +80,6 @@ Scleros
                     Ableton
 
     Arch
-    
+
     OSX
 ```

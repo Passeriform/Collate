@@ -20,7 +20,7 @@ function Create-CollateCertificate() {
     NotAfter          = [datetime]::now.AddYears(5)
     CertStoreLocation = 'Cert:\CurrentUser\My'
   }
-  
+
   $CollateSigningCert = New-SelfSignedCertificate @Params
 
   return $CollateSigningCert
@@ -54,7 +54,7 @@ function Get-CollateCertificate {
     if (!$CollateCertificate) {
       Create-CollateCertificate
     }
-    
+
     Export-CollateCertificate $CollateCertificatePath $CollateSigningCert
   } else {
     if (!$CollateCertificate) {

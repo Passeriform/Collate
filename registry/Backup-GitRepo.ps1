@@ -41,7 +41,7 @@ param (
   [string]$Target = $(Get-Location),
 
   [switch]$Recurse,
-  
+
   [int]$Depth,
 
   [string[]]$Exclude = @(),
