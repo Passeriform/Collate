@@ -54,3 +54,6 @@ string quoteSanitize(T)(T value) {
 string generateRandomString(int length) {
   return iota(length).map!(_ => letters[uniform(0, $)]).array;
 }
+string cmdletNounCase(string inString) {
+	return inString.split("-").map!((part) => part.capitalize).join;
+}

@@ -14,5 +14,7 @@ sourceFiles "lib/libcurl/windows/bin64/libcurl.dll" platform="windows-x86_64"
 
 targetPath "target"
 
+versions "LocalRegistry"
+
 preGenerateCommands "dub run --rdmd --single --root=scripts $PACKAGE_DIR/scripts/dependencyResolver.d || dub run --build-mode=singleFile --single --combined --root=scripts $PACKAGE_DIR/scripts/dependencyResolver.d"
 postBuildCommands-windows "powershell.exe $PACKAGE_DIR/scripts/Post-Build.ps1"
