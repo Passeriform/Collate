@@ -7,4 +7,11 @@ license "MIT"
 dependency "sdlang-d" version="~>0.10.6"
 dependency "commandr" version="~>0.1"
 
-postBuildCommands-windows-x86_64 "powershell.exe $PACKAGE_DIR/scripts/Post-Build.ps1"
+libs "libcurl"
+
+sourceFiles "lib/libcurl/windows/bin/libcurl.dll" platform="windows-x86"
+sourceFiles "lib/libcurl/windows/bin64/libcurl.dll" platform="windows-x86_64"
+
+targetPath "target"
+
+postBuildCommands-windows "powershell.exe $PACKAGE_DIR/scripts/Post-Build.ps1"
