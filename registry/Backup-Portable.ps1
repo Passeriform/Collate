@@ -49,7 +49,7 @@ param (
 
 $Exclude=@($Exclude | % { "-xr!`"$_`"" })
 
-7z.exe a -t7z -mx9 -up1q1r2x1y2z1w2 $Target/$Label.7z $Include[0..($Include.count - 1)] $Exclude[0..($Exclude.count - 1)]
+7zz a -t7z -mx9 -up1q1r2x1y2z1w2 $Target/$Label.7z $Include[0..($Include.count - 1)] $Exclude[0..($Exclude.count - 1)]
 
 # SIG # Begin signature block
 # MIIF6wYJKoZIhvcNAQcCoIIF3DCCBdgCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB

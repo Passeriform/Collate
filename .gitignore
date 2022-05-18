@@ -3,6 +3,7 @@ docs.json
 __dummy.html
 docs/
 target/
+vendor/
 *.cer
 *.crt
 /collate
