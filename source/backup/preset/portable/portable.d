@@ -2,13 +2,13 @@ module portable;
 
 import sdlang       : Tag;
 import std.file     : mkdirRecurse;
-import std.path     : absolutePath, buildNormalizedPath;
-import std.process  : spawnProcess, wait;
-import std.stdio    : stderr, stdin, stdout;
+import std.path     : buildNormalizedPath;
 import std.variant  : Variant;
 
-import preset         : Preset, PresetBackupResult, PresetValidateResult;
-import utility        : getCoerced, getCoercedTagValues, prepareScriptArg, generateRandomString;
+import download			:	getScript;
+import preset				: Preset, PresetBackupResult, PresetValidateResult;
+import runner				:	run;
+import utility			: getCoerced, getCoercedTagValues, prepareScriptArg, generateRandomString;
 
 class Portable : Preset {
   override PresetValidateResult validate(Tag presetOptions, Variant[string] globalOptions) {
@@ -26,20 +26,12 @@ class Portable : Preset {
     string includeString = presetOptions.getCoercedTagValues!(string)("include", []).prepareScriptArg!(string[]);
     string excludeString = presetOptions.getCoercedTagValues!(string)("exclude", []).prepareScriptArg!(string[]);
 
-    auto pid = spawnProcess(
-      [
-        "powershell",
-        absolutePath("registry/Backup-Portable.ps1"),
-        "-Target", targetPath,
-        "-Label", label,
-        "-Include", includeString,
-        "-Exclude", excludeString,
-      ],
-      stdin,
-      stdout,
-      stderr
-    );
-    scope(exit) wait(pid);
+		getScript("backup", "portable").run([
+      "-Target", targetPath,
+      "-Label", label,
+      "-Include", includeString,
+      "-Exclude", excludeString,
+    ]);
   }
 }
 

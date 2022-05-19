@@ -1,14 +1,16 @@
 module main;
 
-import commandr     : Argument, Command, Flag, Option, parse, Program, ProgramArgs;
-import std.variant  : Variant;
-import std.conv     : to;
+import commandr				: Command, Flag, Option, parse, Program, ProgramArgs;
+import sdlang					: Tag;
+import std.algorithm	: filter;
+import std.conv				: to;
+import std.variant		: Variant;
 
-import backup       : backup;
-import config       : fetchConfigRoot, getGlobalOptions, getStages, mergeWith;
+import backup					: backup;
+import config					: fetchConfigRoot, getGlobalOptions, getStages, mergeWith, stageConditions;
 
 void main(string[] args) {
-	auto parsedArgs = new Program("collate", "1.0")
+	ProgramArgs parsedArgs = new Program("collate", "1.0")
 		.summary("System replication and rejuvenation toolkit")
 		.author("Utkarsh Bhardwaj (Passeriform) <passeriform.ub@gmail.com>")
 		.add(new Flag("v", "verbose", "turns on more verbose output")
@@ -22,42 +24,38 @@ void main(string[] args) {
 
 	Variant[string] globalOptions = parsedArgs.populateGlobalOptions;
 
+	auto configRoot = fetchConfigRoot(globalOptions["config"].to!string)
+		.mergeWith(parsedArgs.populateBackupOptions)
+		.mergeWith(globalOptions);
+
 	parsedArgs
-	  .on("backup", (args) {
-			processBackup(
-				args.populateBackupOptions,
-				globalOptions
-			);
-	  });
+	  .on("backup", (args) { processBackup(configRoot); });
 }
 
 Variant[string] populateBackupOptions(ProgramArgs subCommandArgs) {
-	Variant[string] backupOptions;
-
-	// TODO: Implement dryrun option
-	backupOptions["dryrun"] = subCommandArgs.option("dryrun", "false").to!bool;
-
-	return backupOptions;
+	return [
+		"dryrun": Variant(subCommandArgs.option("dryrun", "false").to!bool)
+	];
 }
 
 Variant[string] populateGlobalOptions(ProgramArgs globalArgs) {
-	Variant[string] globalOptions;
-
-	globalOptions["verbose"] = globalArgs.occurencesOf("verbose").to!int;
-	globalOptions["config"] = globalArgs.option("config", ".\\collate.sdl");
-
-	return globalOptions;
+	string defaultConfigPath = (() {
+		version(Windows)
+			return ".\\collate.sdl";
+		else version(posix)
+			return "./collate.sdl";
+		else
+			return "./collate.sdl";
+	})();
+	return [
+		"verbose": Variant(globalArgs.occurencesOf("verbose").to!int),
+		"config": Variant(globalArgs.option("config", defaultConfigPath))
+	];
 }
 
-void processBackup(Variant[string] backupArgs, Variant[string] globalArgs) {
-	auto configRoot = fetchConfigRoot(globalArgs["config"].to!string)
-		.mergeWith(backupArgs)
-		.mergeWith(globalArgs);
-
-	auto globalOptions = configRoot.getGlobalOptions;
-
-	// TODO: Accept stages on the basis on occurance in the config file.
-	auto backupEntries = configRoot.getStages("backup");
-
-	backup(backupEntries, globalOptions);
+void processBackup(Tag configRoot) {
+	return configRoot
+		.getStages("backup")
+		.filter!(stageConditions)
+		.backup(configRoot.getGlobalOptions);
 }

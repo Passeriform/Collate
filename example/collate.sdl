@@ -1,6 +1,6 @@
-target "L:\CollateBackup"
+target "L:\\CollateBackup" "/home/utkarsh/collate"
 
-stage "backup" {
+stage "backup" os="windows" scour-untraced=true {
   preset "cargo"
   preset "choco" {
     exclude "KB" "vcredist"
@@ -11,7 +11,7 @@ stage "backup" {
   }
   /*
   preset "installable" {
-      entry "Adobe Suite" "C:\Users\username\adobe\configs"
+      entry "Adobe Suite" "C:\\Users\\username\\adobe\\configs"
   }
   */
   preset "npm"
@@ -31,10 +31,26 @@ stage "backup" {
   */
 }
 
+stage "backup" os="linux" {
+  preset "cargo"
+  preset "gem"
+  /* preset "gitrepo" recursive=true depth=2 {
+    scanroot "/Development/"
+  } */
+  preset "npm"
+  preset "pip"
+  /* preset "portable" label="Home" {
+    include "K:"
+  } */
+	/* preset "chezmoi" {
+		action "update-tracked"
+	} */
+}
+
 stage "prepare" installerdevice="M:" strategy="rufus" {
-  installer "Windows" imagepath="H:\Operating Systems\Windows\Windows11\windows11.iso"
-  installer "Linux" imagepath="H:\Operating Systems\Linux\Arch\arch_2022.iso"
-  installer "MacOS" imagepath="H:\Operating Systems\MacOS\Monterey\moneterey.dmg"
+  installer "Windows" imagepath="H:\\Operating Systems\\Windows\\Windows11\\windows11.iso"
+  installer "Linux" imagepath="H:\\Operating Systems\\Linux\\Arch\\arch_2022.iso"
+  installer "MacOS" imagepath="H:\\Operating Systems\\MacOS\\Monterey\\moneterey.dmg"
 }
 
 stage "partitioning" partition_table="GPT" {

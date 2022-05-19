@@ -1,15 +1,17 @@
 module config;
 
-import sdlang         : ParseException, parseSource, Tag, Value;
-import std.algorithm  : filter, map, canFind;
+import sdlang         : ParseException, parseSource, Tag, Value, Attribute;
+import std.algorithm  : canFind, filter, find, map, fold;
 import std.array      : array, assocArray;
 import std.file       : readText;
 import std.path       : baseName;
+import std.range			: empty;
 import std.typecons   : tuple;
-import std.uni        : toLower;
+import std.uni        : toLower, sicmp;
 import std.variant    : Variant;
 
 import exception      : InvalidConfigException;
+import utility        : getTargetOSString;
 
 Tag fetchConfigRoot(string configPath) {
   Tag root;
@@ -36,9 +38,26 @@ Variant[string] getGlobalOptions(Tag root) {
 
   return root.tags
     .filter!((tagElem) => !reservedEntries.canFind(tagElem.name)).array
-    // HACK: Mandatory type erasure.
-    .map!((tagElem) => tuple(tagElem.name, Variant(tagElem.getValue!string())))
+    .map!((tagElem) => tuple(tagElem.name, tagElem.resolveGlobalValue))
     .assocArray;
+}
+
+Variant resolveGlobalValue(Tag variable) {
+	switch(variable.name) {
+		case "target":
+			return Variant(variable.values.filter!(
+				(value) {
+					version(Windows)
+						return !value.toString.find("\\").empty;
+					else version(posix)
+						return value.toString.find("\\").empty;
+					else
+						return value.toString.find("\\").empty;
+				}
+			).front);
+		default:
+			return Variant(variable.getValue!string());
+	}
 }
 
 Tag[] getStages(Tag root) {
@@ -59,6 +78,7 @@ Tag[] getPresets(Tag root, string presetName) {
     .filter!((tagElem) => tagElem.getValue!string() == presetName).array;
 }
 
+// TODO: Make more functional
 Tag mergeWith(Tag existingConfig, Variant[string] overloadMap) {
   for (int i = 0; i < existingConfig.tags.length; i++) {
     string tagName = existingConfig.tags[i].getFullName.toString;
@@ -69,4 +89,13 @@ Tag mergeWith(Tag existingConfig, Variant[string] overloadMap) {
     }
   }
   return existingConfig;
+}
+
+auto stageConditions(T = Tag, U = Variant)(T entry) {
+	immutable (bool function(U))[string] attrFilters = [
+		"os": function bool(U attrValue) { return attrValue.toString.sicmp(getTargetOSString) == 0; },
+	];
+
+	auto validConditionalAttrs = entry.attributes.filter!((Attribute attr) => attrFilters.keys.canFind(attr.name)).array;
+	return validConditionalAttrs.fold!((acc, attr) => acc && attrFilters[attr.name](cast(Variant)attr.value))(true);
 }

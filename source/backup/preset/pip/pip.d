@@ -2,12 +2,12 @@ module pip;
 
 import sdlang       : Tag;
 import std.file     : mkdirRecurse;
-import std.path     : absolutePath, buildNormalizedPath;
-import std.process  : spawnProcess, wait;
-import std.stdio    : stderr, stdin, stdout;
+import std.path     : buildNormalizedPath;
 import std.variant  : Variant;
 
+import download			:	getScript;
 import preset       : Preset, PresetBackupResult, PresetValidateResult;
+import runner				:	run;
 import utility      : getCoerced, getCoercedTagValues, prepareScriptArg;
 
 class Pip : Preset {
@@ -24,20 +24,12 @@ class Pip : Preset {
     string includeString = presetOptions.getCoercedTagValues!(string)("include", []).prepareScriptArg!(string[]);
     string excludeString = presetOptions.getCoercedTagValues!(string)("exclude", []).prepareScriptArg!(string[]);
 
-    auto pid = spawnProcess(
-      [
-        "powershell",
-        absolutePath("registry/Backup-Pip.ps1"),
-        "-Target", targetPath,
-        "-IncludeDir", includeDirString,
-        "-Include", includeString,
-        "-Exclude", excludeString,
-      ],
-      stdin,
-      stdout,
-      stderr
-    );
-    scope(exit) wait(pid);
+		getScript("backup", "pip").run([
+      "-Target", targetPath,
+      "-IncludeDir", includeDirString,
+      "-Include", includeString,
+      "-Exclude", excludeString,
+    ]);
   }
 }
 

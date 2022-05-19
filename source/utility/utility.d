@@ -2,12 +2,13 @@ module utility;
 
 import sdlang         : Tag, Value;
 import std.algorithm  : map;
-import std.array      : array, join;
+import std.array      : array, join, split;
 import std.ascii      : letters;
 import std.conv       : to;
 import std.random     : uniform;
 import std.range      : iota;
-import std.traits     : isArray, isAssociativeArray, isSomeString;
+import std.string			: capitalize;
+import std.traits     : isArray, isAssociativeArray, isNumeric, isSomeString;
 
 T getOrElse(T)(T maybeValue, T defaultValue) {
   bool shouldDefault = maybeValue == null;
@@ -40,7 +41,15 @@ string prepareScriptArg(T : T[])(T[] argArray)
     .getOrElse("@()");
 }
 
-string prepareScriptArg(T)(T arg) {
+string prepareScriptArg(T)(T arg)
+	if (isNumeric!(T)) {
+  return arg
+    .to!(string)
+    .getOrElse("0");
+}
+
+string prepareScriptArg(T)(T arg)
+	if (!isNumeric!(T)) {
   return arg
     .to!(string)
     .quoteSanitize
@@ -54,6 +63,26 @@ string quoteSanitize(T)(T value) {
 string generateRandomString(int length) {
   return iota(length).map!(_ => letters[uniform(0, $)]).array;
 }
+
+string getTargetOSString() {
+  version (Windows)
+    return "Windows";
+  else version (linux)
+    return "linux";
+  else version (OSX)
+    return "OSX";
+  else version (FreeBSD)
+    return "FreeBSD";
+  else version (OpenBSD)
+    return "OpenBSD";
+  else version (Solaris)
+    return "Solaris";
+  else version (DragonFlyBSD)
+    return "DragonFlyBSD";
+  else
+    static assert(0, "unknown TARGET");
+}
+
 string cmdletNounCase(string inString) {
 	return inString.split("-").map!((part) => part.capitalize).join;
 }

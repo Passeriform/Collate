@@ -3,6 +3,8 @@ module preset;
 import sdlang         : Tag;
 import std.variant    : Variant;
 
+import exception			: PresetNotFoundException;
+
 alias PresetValidateResult = bool;
 alias PresetBackupResult = void;
 
@@ -22,7 +24,7 @@ abstract class Preset {
       return getRegistry()[presetName];
     }
 
-    throw new PresetNotFoundException("Preset wasn't found", "Maybe preset isn't registered. Register using static method `register` for Preset");
+    throw new PresetNotFoundException("Preset " ~ presetName ~ " wasn't found", "Maybe preset isn't registered. Register using static method `register` for Preset");
   }
 
   mixin template register(T, string name) {
@@ -41,22 +43,4 @@ void validatePreset(Tag presetTag, Variant[string] globalOptions) {
 
 void backupPreset(Tag presetTag, Variant[string] globalOptions) {
   Preset.getPreset(presetTag.getValue!string).backup(presetTag, globalOptions);
-}
-
-class PresetNotFoundException : Exception {
-    this(string msg, string suggestion, string file = __FILE__, size_t line = __LINE__) {
-        super(msg ~ "\n" ~ suggestion, file, line);
-    }
-}
-
-class ValidationError : Exception {
-    this(string msg, string file = __FILE__, size_t line = __LINE__) {
-        super(msg, file, line);
-    }
-}
-
-class BackupError : Exception {
-    this(string msg, string file = __FILE__, size_t line = __LINE__) {
-        super(msg, file, line);
-    }
 }
